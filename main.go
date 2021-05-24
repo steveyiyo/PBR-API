@@ -29,12 +29,12 @@ func apiService(c *gin.Context) {
 		r = Result{false, "Bad Request!", c.ClientIP(), ""}
 		c.JSON(400, r)
 	} else if upstream == "TW" {
-		if reroute(c.ClientIP(), "TW") == true {
+		if reroute(c.ClientIP(), "TW") {
 			r = Result{true, fmt.Sprintf("Your route has been reroute to %s upstream!", upstream), c.ClientIP(), upstream}
 			c.JSON(200, r)
 		}
 	} else if upstream == "JP" {
-		if reroute(c.ClientIP(), "JP") == true {
+		if reroute(c.ClientIP(), "JP") {
 			r = Result{true, fmt.Sprintf("Your route has been reroute to %s upstream!", upstream), c.ClientIP(), upstream}
 			c.JSON(200, r)
 		}
@@ -50,8 +50,8 @@ func pageNotAvailable(c *gin.Context) {
 
 func reroute(IP_Address string, Node string) bool {
 	command := fmt.Sprintf("ip rule add from %s lookup %s", IP_Address, Node)
-	exec.Command(command)
-	fmt.Println(command)
+	cmd := exec.Command("bash", "-c", command)
+	cmd.Run()
 	return true
 }
 
